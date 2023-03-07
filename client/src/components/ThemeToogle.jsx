@@ -5,7 +5,7 @@ const ThemeToogle = () => {
   const { theme, setTheme } = useContext(ThemeContext);
 
   return (
-    <div className="">
+    <div>
       {theme === 'dark' ? (
         <div
           className="flex items-center cursor-pointer"
