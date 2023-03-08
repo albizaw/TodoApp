@@ -11,7 +11,8 @@ const Todos = () => {
   const navigate = useNavigate();
 
   const [todo, setTodo] = useState('');
-  const [todos, setTodos] = useState([]);
+  const [id, setId] = useState();
+  const [todos, setTodos] = useState([{ id: 1, text: 'costam' }]);
   const [isEdit, setIsEdit] = useState(false);
   const [credentials] = useContext(CredentialsContext);
 
@@ -26,6 +27,30 @@ const Todos = () => {
   };
 
   //   Delete Todo
+  const handleDelete = (id) => {
+    const newTodoList = [...todos];
+    const removeItem = newTodoList.filter((todo) => {
+      return todo.id !== id;
+    });
+    setTodos(removeItem);
+  };
+
+  // Update Todo
+  const handleUpdate = (todo) => {
+    setIsEdit(true);
+    setTodo(todo.text);
+    setId(todo.id);
+  };
+
+  const confirmUpdate = () => {
+    const newTodoList = [...todos];
+    const todoIndex = newTodoList.findIndex((todo) => todo.id === id);
+    newTodoList[todoIndex] = { ...newTodoList[todoIndex], text: todo };
+    setTodos(newTodoList);
+    setTodo('');
+    setId();
+    setIsEdit(false);
+  };
 
   return (
     <div className="h-screen w-full items-center flex flex-col justify-end md:p-10 p-2">
@@ -45,7 +70,7 @@ const Todos = () => {
 
           {isEdit ? (
             <>
-              <Button sx={{ fontSize: 18 }} onClick>
+              <Button sx={{ fontSize: 18 }} onClick={confirmUpdate}>
                 Confirm
               </Button>
               <Button sx={{ fontSize: 18 }} onClick>
@@ -54,7 +79,7 @@ const Todos = () => {
             </>
           ) : (
             <>
-              <Button sx={{ fontSize: 18 }} onClick>
+              <Button sx={{ fontSize: 18 }} onClick={addTodo}>
                 Add
               </Button>
               <Button sx={{ fontSize: 18 }} onClick={() => navigate('/')}>
@@ -72,19 +97,23 @@ const Todos = () => {
           >
             <div className="text-3xl overflow-x-hidden">
               {' '}
-              {index + 1}. {todo}
+              {index + 1}. {todo.text}
             </div>
 
             <div>
               <EditIcon
                 sx={{ fontSize: 35 }}
                 className="cursor-pointer border-2 rounded-full p-1 ease-in hover:duration-500 hover:transition hover:scale-105 mx-2"
-                onClick
+                onClick={() => {
+                  handleUpdate(todo);
+                }}
               ></EditIcon>
               <DeleteIcon
                 className="cursor-pointer border-2 rounded-full p-1 ease-in hover:duration-500 hover:transition hover:scale-105"
                 sx={{ fontSize: 35 }}
-                onClick
+                onClick={() => {
+                  handleDelete(todo.id);
+                }}
               />
             </div>
           </div>
