@@ -21,7 +21,7 @@ const router = createBrowserRouter([
 export const CredentialsContext = createContext();
 
 function App() {
-  const credentialsState = useState(null);
+  const credentialsState = useState({ email: 'adam' });
 
   return (
     <CredentialsContext.Provider value={credentialsState}>
