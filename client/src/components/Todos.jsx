@@ -97,7 +97,7 @@ const Todos = () => {
           >
             <div className="text-3xl overflow-x-hidden">
               {' '}
-              {index + 1}. {todo.text}
+              {index + 1}. {todo.text.toLowerCase()}
             </div>
 
             <div>
