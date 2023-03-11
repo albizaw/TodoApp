@@ -7,22 +7,61 @@ import { useFormik, useFormikContext } from 'formik';
 import { registerValidation } from '../helper/validate';
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const [error, setError] = useState('');
+  const [, setCredentails] = useContext(CredentialsContext);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleErrors = async (response) => {
+    if (!response.ok) {
+      const { message } = await response.json();
+
+      throw Error(message);
+    }
+    return response.json();
+  };
+
+  const register = (e) => {
+    const { values } = formik;
+    setEmail(values.email);
+    setPassword(values.password);
+
+    fetch(`http://localhost:8000/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    })
+      .then(handleErrors)
+      .then(() => {
+        setCredentails({
+          email,
+          password,
+        });
+        navigate('/todos');
+      })
+      .catch((error) => {
+        console.log('co tam' + error);
+        setError(error.err);
+      });
+  };
 
   const formik = useFormik({
     initialValues: {
-      email: 'ada',
+      email: '',
       password: '',
     },
     validate: registerValidation,
     validateOnBlur: false,
     validateOnChange: false,
-    onSubmit: (values) => {
-      console.log(values);
-    },
+    onSubmit: register,
   });
-
-  const { values } = formik;
 
   return (
     <div className="w-full h-[calc(100vh-80px)] fixed flex flex-col items-center justify-center z-[-10]">

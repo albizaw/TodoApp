@@ -13,7 +13,7 @@ const router = createBrowserRouter([
   { path: '/', element: <Homepage /> },
   { path: '/signup', element: <SignUp /> },
   { path: '/signin', element: <SignIn /> },
-  { path: '/todo', element: <Todo /> },
+  { path: '/todos', element: <Todo /> },
   { path: '/*', element: <PageNotFound /> },
 ]);
 
@@ -21,7 +21,7 @@ const router = createBrowserRouter([
 export const CredentialsContext = createContext();
 
 function App() {
-  const credentialsState = useState({ email: 'adam' });
+  const credentialsState = useState({ email: 'ada' });
 
   return (
     <CredentialsContext.Provider value={credentialsState}>
