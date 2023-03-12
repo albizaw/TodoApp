@@ -88,4 +88,27 @@ export async function todosGet(req, res) {
 }
 
 // DELETE
-export async function todosDelete(req, res) {}
+export async function todosDelete(req, res) {
+  const { id } = req.params;
+  const { email, password } = req.headers;
+  const user = await UserModel.findOne({ email }).exec();
+
+  const checkPassword = await bcrypt.compare(password, user.password);
+  if (!user || !checkPassword) {
+    res.status(401).json({ message: 'Unauthorized' });
+    return;
+  }
+
+  const todos = await TodoModel.findOne({ userId: user._id }).exec();
+  if (!todos) {
+    res.status(404).json({ message: 'Todos not found' });
+    return;
+  }
+
+  todos.todos = todos.todos.filter((todo) => todo.id !== id);
+  await todos.save();
+  res.status(200).json({ message: 'Todo deleted successfully' });
+}
+
+// UPDATE
+export async function todosUpdate(req, res) {}

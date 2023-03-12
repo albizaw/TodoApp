@@ -10,5 +10,6 @@ router.route('/signin').post(controller.signin);
 router.route('/todos').post(controller.todosPost);
 router.route('/todos').get(controller.todosGet);
 router.route('/todos/:id').delete(controller.todosDelete);
+router.route('/todos/:id').put(controller.todosUpdate);
 
 export default router;
