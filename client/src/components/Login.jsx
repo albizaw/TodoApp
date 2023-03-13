@@ -7,22 +7,49 @@ import { useFormik, useFormikContext } from 'formik';
 import { registerValidation } from '../helper/validate';
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [error, setError] = useState('');
+  const [, setCredentails] = useContext(CredentialsContext);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const formik = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-    },
-    validate: registerValidation,
-    validateOnBlur: false,
-    validateOnChange: false,
-    onSubmit: (values) => {
-      console.log(values);
-    },
-  });
+  const handleErrors = async (response) => {
+    if (!response.ok) {
+      const { message } = await response.json();
 
-  const { values } = formik;
+      throw Error(message);
+    }
+    return response.json();
+  };
+
+  const login = (e) => {
+    e.preventDefault();
+
+    fetch(`http://localhost:8000/signin`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    })
+      .then(handleErrors)
+      .then(() => {
+        setCredentails({
+          email,
+          password,
+        });
+        localStorage.setItem('token-info', JSON.stringify({ email, password }));
+        navigate('/todos');
+      })
+      .catch((error) => {
+        console.log(error);
+        setError(error.message);
+      });
+  };
 
   return (
     <div className="w-full h-[calc(100vh-80px)] fixed flex flex-col items-center justify-center z-[-10]">
@@ -33,14 +60,14 @@ const Login = () => {
 
         {/* form */}
         <form
-          onSubmit={formik.handleSubmit}
+          onSubmit={login}
           className="flex flex-col justify-between font-medium"
         >
           <div className="my-3">
             <label>Email</label>
             <div className="my-2 relative rounded-2xl">
               <input
-                {...formik.getFieldProps('email')}
+                onChange={(e) => setEmail(e.target.value)}
                 className="placeholder:text-1xl w-full p-2 bg-primary border-2 border-input rounded-2xl"
                 type="email"
               />
@@ -51,7 +78,7 @@ const Login = () => {
             <label>Password</label>
             <div className="my-2 relative rounded-2xl">
               <input
-                {...formik.getFieldProps('password')}
+                onChange={(e) => setPassword(e.target.value)}
                 className="placeholder:text-1xl w-full p-2 bg-primary border-2 border-input rounded-2xl"
                 type="password"
               />

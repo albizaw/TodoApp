@@ -14,6 +14,7 @@ export async function signup(req, res) {
     });
     return;
   }
+
   const hashedPassword = await bcrypt.hash(password, 10);
   await UserModel.create({ email, password: hashedPassword });
   res.status(201);
@@ -24,14 +25,16 @@ export async function signup(req, res) {
 export async function signin(req, res) {
   const { email, password } = req.body;
   const user = await UserModel.findOne({ email }).exec();
-  const checkPassword = await bcrypt.compare(password, user.password);
-  if (!user || !checkPassword) {
+  if (user && user.password) {
+    const checkPassword = await bcrypt.compare(password, user.password);
+  } else {
     res.status(500);
     res.json({
       message: 'Invalid login',
     });
     return;
   }
+
   res.status(201);
   res.json({ message: 'User Log in' });
 }
@@ -45,8 +48,9 @@ export async function todosPost(req, res) {
   const todosItems = req.body;
 
   const user = await UserModel.findOne({ email }).exec();
-  const checkPassword = await bcrypt.compare(password, user.password);
-  if (!user || !checkPassword) {
+  if (user && user.password) {
+    const checkPassword = await bcrypt.compare(password, user.password);
+  } else {
     res.status(403);
     res.json({ message: 'Invalid action' });
     return;
@@ -70,8 +74,9 @@ export async function todosGet(req, res) {
   const [email, password] = token.split(':');
 
   const user = await UserModel.findOne({ email }).exec();
-  const checkPassword = await bcrypt.compare(password, user.password);
-  if (!user || !checkPassword) {
+  if (user && user.password) {
+    const checkPassword = await bcrypt.compare(password, user.password);
+  } else {
     res.status(403);
     res.json({
       message: 'Invalid action',
@@ -92,9 +97,9 @@ export async function todosDelete(req, res) {
   const { id } = req.params;
   const { email, password } = req.headers;
   const user = await UserModel.findOne({ email }).exec();
-
-  const checkPassword = await bcrypt.compare(password, user.password);
-  if (!user || !checkPassword) {
+  if (user && user.password) {
+    const checkPassword = await bcrypt.compare(password, user.password);
+  } else {
     res.status(401).json({ message: 'Unauthorized' });
     return;
   }
@@ -111,4 +116,35 @@ export async function todosDelete(req, res) {
 }
 
 // UPDATE
-export async function todosUpdate(req, res) {}
+export async function todosUpdate(req, res) {
+  const { id } = req.params;
+  const { email, password } = req.headers;
+  const user = await UserModel.findOne({ email }).exec();
+  if (user && user.password) {
+    const checkPassword = await bcrypt.compare(password, user.password);
+  } else {
+    res.status(401).json({ message: 'Unauthorized' });
+    return;
+  }
+
+  const todos = await TodoModel.findOne({ userId: user._id }).exec();
+  if (!todos) {
+    res.status(404).json({ message: 'Todos not found' });
+    return;
+  }
+
+  const todo = todos.todos.find((todo) => todo.id === id);
+  if (!todo) {
+    res.status(404).json({ message: 'Todo not found' });
+    return;
+  }
+
+  const { text } = req.body;
+  if (text) {
+    todo.text = text;
+    await todos.save();
+    res.status(200).json({ message: 'Todo updated successfully' });
+  } else {
+    res.status(400).json({ message: 'Bad request' });
+  }
+}

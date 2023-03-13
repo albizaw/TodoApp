@@ -1,17 +1,17 @@
 import { toast } from 'react-hot-toast';
 
 // validation
-function emailValidation(values) {
+export async function emailValidation(values) {
   const errors = emailVerify({}, values);
   return errors;
 }
 
-function passwordValidate(values) {
+export async function passwordValidate(values) {
   const errors = passwordVerify({}, values);
   return errors;
 }
 
-export function registerValidation(values) {
+export async function registerValidation(values) {
   const errors = emailVerify({}, values);
   passwordVerify(errors, values);
   return errors;
