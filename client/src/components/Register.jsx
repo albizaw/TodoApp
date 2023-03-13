@@ -50,8 +50,8 @@ const Register = () => {
   };
 
   return (
-    <div className="w-full h-[90%] fixed flex flex-col items-center justify-center z-[-10]">
-      <div className="w-2/5 h-fit md:border-4 md:border-input md:p-20">
+    <div className="w-full h-[calc(100vh-80px)] fixed flex flex-col items-center justify-center z-[-10]">
+      <div className="w-3/5 lg:w-[650px] h-fit  md:border-4 md:border-input rounded-lg md:p-20">
         <h1>{error && error}</h1>
         <h1 className="text-2xl font-bold">Sign Up</h1>
         <form
