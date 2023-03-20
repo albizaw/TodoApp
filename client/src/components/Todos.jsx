@@ -113,7 +113,7 @@ const Todos = () => {
         <ThemeToogle />
       </div>
       <div className="h-1/4 md:w-3/4 w-full p-4 flex flex-col items-center justify-between">
-        <h1 className=" text-center md:text-4xl text-3xl ">{`Hello ${credentials.email}`}</h1>
+        <h1 className=" text-center md:text-3xl text-xl ">{`Hello ${credentials.email}`}</h1>
         <div className="my-2 w-full md:w-1/2 flex flex-col rounded-2xl">
           <input
             placeholder="Enter todo"
@@ -144,7 +144,7 @@ const Todos = () => {
           )}
         </div>
       </div>
-      <div className="scrollable-div h-full md:w-2/4 w-full mt-16 p-4 bg-primary border-4 border-input rounded-2xl my-4 flex flex-col items-center overflow-y-scroll">
+      <div className="max-w-screen-md scrollable-div h-full  w-full mt-16 p-4 bg-primary border-4 border-input rounded-2xl my-4 flex flex-col items-center overflow-y-scroll">
         {todos.map((todo, index) => (
           <div
             className={`flex items-center justify-between px-4 w-full h-fit ${
