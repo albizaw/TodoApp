@@ -3,16 +3,17 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
 import router from './router/routes.js';
+import * as dotenv from 'dotenv';
 
 const app = express();
-
+dotenv.config();
 app.use(express.json());
 app.use(cors());
 app.use(morgan('tiny'));
 
 const port = 8000;
 
-mongoose.connect('mongodb://localhost:27017/todos', {
+mongoose.connect(process.env.MONGO_DB_URL, {
   useNewUrlParser: true,
 });
 

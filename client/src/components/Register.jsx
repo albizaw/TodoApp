@@ -41,7 +41,8 @@ const Register = () => {
           email,
           password,
         });
-        navigate('/todos');
+
+        navigate('/signin');
       })
       .catch((error) => {
         console.log(error);
